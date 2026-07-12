@@ -205,8 +205,9 @@
       const div = document.createElement('div');
       div.className = 'tile product-tile';
       div.innerHTML = `${p.name}<br><small>KES ${p.price}</small><br><span style="font-size:0.7rem;">stock:${p.stock}</span>
+      /*
         <br><button onclick="event.stopPropagation();editProduct('${p.code}')" style="font-size:0.6rem;">Edit</button>
-        <button onclick="event.stopPropagation();deleteProduct('${p.code}')" style="font-size:0.6rem;">Del</button>`;
+        <button onclick="event.stopPropagation();deleteProduct('${p.code}')" style="font-size:0.6rem;">Del</button>*/`;
       div.onclick = () => quickAdd(p);
       grid.appendChild(div);
     });
