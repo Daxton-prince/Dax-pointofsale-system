@@ -1,0 +1,420 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      background: #f4f6fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* topbar */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      background: #0b1a2b;
+      color: white;
+      padding: 0.6rem 1.8rem;
+      border-bottom: 2px solid #2a8cff;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(145deg, #8fcbff, #2a8cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .search-area input {
+      width: 280px;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: none;
+      background: #1e3347;
+      color: white;
+      font-size: 0.9rem;
+      outline: 1px solid #3a5a7a;
+      transition: 0.2s;
+    }
+    .search-area input:focus {
+      outline: 2px solid #2a8cff;
+      background: #0b1a2b;
+    }
+    .search-area input::placeholder {
+      color: #9bb7d4;
+    }
+    .top-user {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      background: #1a2f41;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+    }
+    .top-user strong {
+      color: #7fc2ff;
+      cursor: pointer;
+    }
+    /* layout */
+    .app-layout {
+      display: flex;
+      flex: 1;
+      gap: 0.8rem;
+      padding: 1rem 1.2rem;
+      background: #eef2f7;
+    }
+    .sidebar {
+      background: white;
+      padding: 1.2rem 0.8rem;
+      border-radius: 20px;
+      min-width: 150px;
+      box-shadow: 0 6px 14px rgba(0,20,40,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .sidebar h3 {
+      color: #1a2f41;
+      font-weight: 900;
+      text-decoration: underline;
+      margin-bottom: 0.8rem;
+      padding-left: 0.4rem;
+    }
+    .sidebar button {
+      background: transparent;
+      border: none;
+      text-align: left;
+      padding: 0.6rem 0.8rem;
+      border-radius: 14px;
+      font-weight: 700;
+      color: #1e3347;
+      transition: 0.15s;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .sidebar button:hover {
+      background: #e2ecfa;
+      color: #0b1a2b;
+    }
+    .sidebar hr {
+      margin: 0.4rem 0;
+      border: 1px dashed #d0ddee;
+    }
+    .content {
+      flex: 1;
+      background: white;
+      border-radius: 28px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.02);
+    }
+    .customer-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+    }
+    .customer-bar label {
+      font-weight: 600;
+      color: #1a2f41;
+    }
+    .customer-bar input {
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      border: 1px solid #d0ddee;
+      flex: 1;
+      max-width: 260px;
+    }
+    .categories {
+      display:flex;
+     margin: 0.6rem 0 0.8rem;
+    }
+    #categoryGrid{
+      display: grid;
+ grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  box-sizing: border-box;
+    }
+    .tile {
+      background: #eef4fc;
+      border-radius: 40px;
+      font-size: 1rem;
+      text-align: center;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.1s;
+      border: 1px solid transparent;
+    }
+    .tile:hover {
+      background: #d6e6ff;
+      border-color: #2a8cff;
+    }
+    .product-tile {
+      background: #f8faff;
+      border: 1px solid #dbe7f5;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      display: inline-block;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .product-tile small {
+      display: block;
+      color: #1a5a9c;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .products-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 0.5rem 0 1.2rem;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 0.2rem 0.2rem 0.6rem;
+    }
+    .sales-table {
+      overflow-x: auto;
+      margin-top: 0.2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th {
+      background: #eaf1fb;
+      padding: 0.5rem 0.2rem;
+      color: #0b1a2b;
+    }
+    td {
+      padding: 0.2rem 0.2rem;
+      border-bottom: 1px solid #e9eef6;
+    }
+    td input {
+      width: 70px;
+      padding: 0.2rem 0.2rem;
+      border: 1px solid #d0ddee;
+      border-radius: 8px;
+      background: white;
+      font-size: 0.8rem;
+    }
+    td input[type="text"] {
+      width: 110px;
+    }
+    tfoot{
+      background-color: #0b1a2b;
+      color:white;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: large;
+      font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+    .checkout {
+      background: white;
+      border-radius: 24px;
+      padding: 1.2rem 1.2rem;
+      min-width: 200px;
+      box-shadow: 0 6px 14px rgba(0,20,40,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .checkout h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.2rem;
+      color: #0b1a2b;
+    }
+    .checkout label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #3d5770;
+      margin-top: 0.3rem;
+    }
+    .checkout input {
+      padding: 0.3rem 0.6rem;
+      border: 1px solid #d0ddee;
+      border-radius: 30px;
+      background: #f8faff;
+    }
+    .checkout button {
+      margin-top: 0.8rem;
+      background: #0b1a2b;
+      color: white;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .checkout button:hover {
+      background: #1e3b57;
+    }
+    footer {
+      text-align: center;
+      padding: 0.8rem;
+      color: #5d738b;
+      font-size: 0.75rem;
+      background: #f4f6fa;
+      border-top: 1px solid #dce6f0;
+    }
+    /* modals */
+     #adminPanel,#stockPanel, #catalogWrapper, #historyCard, #notifyBox {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      display: none;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    
+    #adminLogin{
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+
+    }
+    #adminLogin >div{
+      background: white;
+      padding: 1.8rem 1rem;
+      border-radius: 40px;
+      max-width: 300px;
+      width: 70%;  
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    #adminLogin input{
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: none;
+      margin: auto;
+      display: block;
+      background: #1e3347;
+      color: white;
+      font-size: 0.9rem;
+      outline: 1px solid #3a5a7a;
+      transition: 0.2s;
+    }
+    #adminLogin input:focus{
+     outline: 2px solid #2a8cff;
+      background: #0b1a2b;
+    }
+    #adminLogin input::placeholder {
+      color: #9bb7d4;
+    }
+    #adminLogin button{
+      padding:5px 9px;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin:0 13%;
+      font-weight: 500;
+      border-radius: 10px;
+      color: #3494fa;
+      background: #1e3347;
+    }
+   
+
+     #adminLogin button:hover{
+      cursor: pointer;
+      color: white;
+      transform: scale(0.95);
+     }
+       #catalogWrapper > div, #historyCard > div {
+      background: white;
+      padding: 1.8rem 2rem;
+      border-radius: 40px;
+      max-width: 400px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    #adminPanel > div{
+      background: white;
+      padding: 1.8rem 2rem;
+      border-radius: 40px;
+      max-width: 900px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    #adminPanel .admin {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    #adminPanel input {
+      padding: 0.4rem 0.8rem;
+      width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      flex: 1 0 100px;
+    }
+    #adminPanel button {
+      background: #0b1a2b;
+      color: white;
+      border: none;
+      padding: 0.3rem 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    #catalogWrapper table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #catalogWrapper td, #catalogWrapper th {
+      padding: 0.4rem 0.8rem;
+      border-bottom: 1px solid #e0e8f0;
+    }
+    #catalogWrapper tr:hover {
+      background: #e2ecfa;
+      cursor: pointer;
+    }
+    #historyCard div {
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    #notifyBox {
+      display: none;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(2px);
+    }
+    #notifyCard {
+      background: white;
+      padding: 2rem;
+      border-radius: 40px;
+      min-width: 260px;
+      text-align: center;
+    }
+    #notifyCard button {
+      margin-top: 1rem;
+      padding: 0.4rem 2rem;
+      border: none;
+      background: #0b1a2b;
+      color: white;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+    .rowTotal { font-weight: 600; }
+    .sidebar button:last-of-type { margin-top: auto; }
+    @media (max-width: 700px) {
+      .app-layout { flex-direction: column; }
+      .checkout { flex-direction: row; flex-wrap: wrap; }
+    }
