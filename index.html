@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAX POS · Admin Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="logo">DAX POS SYSTEM</div>
+  <div class="search-area"><input id="searchBox" placeholder="Search product / Scan barcode" oninput="handleSearch()">
+  </div>
+  <div class="top-user"><div>Cashier</div>
+  <strong onclick="openAdminLog('stock')">Admin</strong>
+</div>
+</header>
+<div class="app-layout">
+  <aside class="sidebar">
+    <h3>Navigation</h3>
+    <button onclick="window.location.href='#';">Dashboard</button>
+    <button onclick="openAdminLog('stock')">Stock/Admin</button>
+<button onclick="openAdminLog('sales')">Sales&Report</button>
+<hr>
+    <button onclick="clearTable()">Clear</button>  
+    <button onclick="asideSale()">Hold</button>
+    <button onclick="openHistory()">History</button>
+  </aside>
+  <main class="content">
+    <section class="customer-bar"><label>Customer</label>
+      <input id="customerName" placeholder="Customer name">
+    </section>
+    <section class="categories">
+      <div id="categoryGrid"></div>
+    </section>
+    <section class="products-area">
+      <div id="productGrid"></div>
+    </section>
+    <section class="sales-table">
+      <table id="productTable">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+          <th></th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+        <tfoot><tr><td colspan="4">Grand Total</td>
+          <td id="grandTotal">0</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+    </section>
+  </main>
+  <aside class="checkout">
+    <h2>Payment</h2>
+    <label>Total</label><input id="totalDisplay" readonly>
+    <label>Discount</label><input id="discount" oninput="updatePayment()">
+    <label>Customer Pays</label><input id="paid" oninput="updatePayment()">
+    <label>Balance</label><input id="balance" readonly>
+    <button onclick="completeSale()">Check Out</button>
+  </aside>
+</div>
+<!-- admin login -->
+<div id="adminLogin" style="display:none;">
+  <div id="admin-login">
+    <input id="adminPass" type="password" placeholder="password">
+    
+    <br><button onclick="checkAdmin()" class="quick">Login</button>
+    <button onclick="document.getElementById('adminLogin').style.display='none'">Close</button>
+  
+    <p id="loginError" style="color:red;font-weight: 800; text-align: center;"></p>
+  </div>
+</div>
+<!-- admin panel -->
+<div id="adminPanel" style="display:none;">
+  <div class="admin">
+    <input id="p_code" placeholder="Code">
+    <input id="p_type" placeholder="Type">
+    <input id="p_name" placeholder="Name">
+    <input id="p_stock" placeholder="Stock">
+    <input id="p_price" placeholder="Price">
+    <br>
+    <button onclick="startScan()">Scan</button>
+    <button onclick="addProduct()">Save</button>
+    <button onclick="document.getElementById('adminPanel').style.display='none'">Close</button>
+  
+<div id="stock">
+  <h2 style="text-align: center;">Stock</h2>
+   <!-- <button class="btn btn-success" onclick="addProduct()" style="margin:12px 0;">➕ Add / Update</button>
+     -->
+   <div style="max-height:200px;overflow-y:auto;width: 100%;border-top:1px solid #e9eff6;padding-top:10px;margin: 0 auto;display: block;">
+        <table style="font-size:0.8rem; min-width: 800px;max-width: 1250px;">
+          <thead><tr><th>Code</th><th>Name</th><th>Stock</th><th>Price</th><th></th></tr></thead>
+          <tbody id="catalogAdminBody"></tbody>
+        </table>
+      </div>
+</div>
+  </div>
+</div>
+<!-- catalog search -->
+<div id="catalogWrapper" style="display:none;">
+  <div><table><tbody id="catalogBody"></tbody></table></div>
+</div>
+<!-- history -->
+<div id="historyCard" style="display:none;">
+  <div><h3>📋 Sale History</h3><div id="historyList"></div><button onclick="closeHistory()">Close</button></div>
+</div>
+<!-- notify -->
+<div id="notifyBox">
+  <div id="notifyCard">
+    <h3 id="notifyTitle"></h3>
+    <p id="notifyMessage"></p>
+    <button onclick="closeNotify()">OK</button>
+  </div>
+</div>
+<footer>DAX POS SYSTEM  ©2026</footer>
+<script src="stock.js"></script>
+</body>
+</html>
