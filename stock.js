@@ -207,7 +207,7 @@
       div.innerHTML = `${p.name}<br><small>KES ${p.price}</small><br><span style="font-size:0.7rem;">stock:${p.stock}</span>
      div.onclick = () => quickAdd(p);
       grid.appendChild(div);
-    });
+   ` });
   }
   function quickAdd(product) { insertIntoTable({ name: product.name, price: product.price }); document.getElementById('searchBox').focus(); }
 
