@@ -232,65 +232,146 @@ function renderDashCharts(sales) {
 // ============================================================
 //  POS - PRODUCTS & CART
 // ============================================================
-function renderProducts(category = 'All') {
-    const products = getProducts();
-    const filtered = category === 'All' ? products : products.filter(p => p.category === category);
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = filtered.map(p => `
-        <div class="product-card" onclick="addToCart('${p.code}')">
-            <div class="product-image"><i class="fa fa-box"></i></div>
-            <div class="product-name">${p.name}</div>
-            <div class="product-code">${p.code}</div>
-            <div class="product-price">KES ${p.price}</div>
-            <div class="product-vat">VAT ${p.vat || '16%'}</div>
-            <div class="product-stock">${p.stock}</div>
-        </div>
-    `).join('');
-}
+function renderProductGrid(products){
 
-function filterProducts() {
-    const search = document.getElementById('productSearch').value.toLowerCase();
-    const products = getProducts();
-    const filtered = products.filter(p => 
-        p.name.toLowerCase().includes(search) || 
-        p.code.toLowerCase().includes(search) ||
-        p.category.toLowerCase().includes(search)
-    );
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = filtered.map(p => `
-        <div class="product-card" onclick="addToCart('${p.code}')">
-            <div class="product-image"><i class="fa fa-box"></i></div>
-            <div class="product-name">${p.name}</div>
-            <div class="product-code">${p.code}</div>
-            <div class="product-price">KES ${p.price}</div>
-            <div class="product-vat">VAT ${p.vat || '16%'}</div>
-            <div class="product-stock">${p.stock}</div>
-        </div>
-    `).join('');
-}
+    const grid = document.getElementById("productGrid");
 
+    if(products.length===0){
+
+        grid.innerHTML=`
+            <div class="empty-products">
+                <i class="fa fa-box-open"></i>
+                <h3>No products found</h3>
+            </div>
+        `;
+
+        return;
+    }
+
+    grid.innerHTML = products.map(p=>`
+
+        <div class="product-card" onclick="addToCart('${p.code}')">
+
+            <div class="product-image">
+                <i class="fa fa-box"></i>
+            </div>
+
+            <div class="product-name">${p.name}</div>
+
+            <div class="product-code">${p.code}</div>
+
+            <div class="product-price">
+                KES ${Number(p.price).toFixed(2)}
+            </div>
+
+            <div class="product-vat">
+                VAT ${p.vat || "16%"}
+            </div>
+
+            <div class="product-stock">
+                ${p.stock}
+            </div>
+
+        </div>
+
+    `).join("");
+
+}
+function renderProducts(category = "All") {
+    currentCategory = category;
+    filterByCategory(category);
+}  function filterProducts() {
+
+    const search = document
+        .getElementById("productSearch")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const products = getProducts();
+
+    const filtered = products.filter(product => {
+
+        const matchesCategory =
+            currentCategory === "All" ||
+            (product.category &&
+             product.category.toLowerCase() === currentCategory.toLowerCase());
+
+        const matchesSearch =
+            product.name.toLowerCase().includes(search) ||
+            product.code.toLowerCase().includes(search) ||
+            (product.category &&
+             product.category.toLowerCase().includes(search));
+
+        return matchesCategory && matchesSearch;
+
+    });
+
+    renderProductGrid(filtered);
+
+}
 function filterByCategory(category) {
     currentCategory = category;
-    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-    document.querySelector(`.category-tab:contains(${category})`)?.classList.add('active');
-    if (category === 'All') {
-        renderProducts('All');
-    } else {
-        const products = getProducts().filter(p => p.category === category);
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = products.map(p => `
-            <div class="product-card" onclick="addToCart('${p.code}')">
-                <div class="product-image"><i class="fa fa-box"></i></div>
-                <div class="product-name">${p.name}</div>
-                <div class="product-code">${p.code}</div>
-                <div class="product-price">KES ${p.price}</div>
-                <div class="product-vat">VAT ${p.vat || '16%'}</div>
-                <div class="product-stock">${p.stock}</div>
-            </div>
-        `).join('');
-    }
-}
 
+    // Update active button
+    document.querySelectorAll(".category-tab").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    document.querySelectorAll(".category-tab").forEach(btn => {
+        if (btn.textContent.trim() === category) {
+            btn.classList.add("active");
+        }
+    });
+
+    const products = getProducts();
+
+    // Filter products
+    const filteredProducts = category === "All"
+        ? products
+        : products.filter(product =>
+            product.category &&
+            product.category.trim().toLowerCase() === category.trim().toLowerCase()
+        );
+
+    // Render products
+    const grid = document.getElementById("productGrid");
+
+    if (filteredProducts.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-products">
+                <i class="fa fa-box-open"></i>
+                <h3>No products found</h3>
+                <p>No products available in "${category}" category.</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = filteredProducts.map(p => `
+        <div class="product-card" onclick="addToCart('${p.code}')">
+            <div class="product-image">
+                <i class="fa fa-box"></i>
+            </div>
+
+            <div class="product-name">${p.name}</div>
+
+            <div class="product-code">${p.code}</div>
+
+            <div class="product-price">
+                KES ${Number(p.price).toFixed(2)}
+            </div>
+
+            <div class="product-vat">
+                VAT ${p.vat || "16%"}
+            </div>
+
+            <div class="product-stock">
+                ${p.stock}
+            </div>
+        </div>
+    `).join("");
+}
 // ---------- CART ----------
 function addToCart(productCode) {
     const products = getProducts();
