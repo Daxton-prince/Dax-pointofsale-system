@@ -27,11 +27,11 @@ function navigateTo(page) {
     document.querySelector(`.sidebar-nav a[data-page="${page}"]`)?.classList.add('active');
     
     const titles = {
-        'dashboard': 'Dashboard <small>overview</small>',
-        'pos': 'Point of Sale <small>new sale</small>',
-        'products': 'Products <small>inventory</small>',
-        'customers': 'Customers <small>directory</small>',
-        'invoices': 'Invoices <small>history</small>'
+        'dashboard': 'Dashboard <small>Overview</small>',
+        'pos': 'Point of Sale <small>New Sale</small>',
+        'products': 'Products <small>Inventory</small>',
+        'customers': 'Customers <small>Directory</small>',
+        'invoices': 'Invoices <small>History</small>'
     };
     document.getElementById('pageTitle').innerHTML = titles[page] || page;
     document.getElementById('sidebar').classList.remove('open');
@@ -372,6 +372,50 @@ function filterByCategory(category) {
         </div>
     `).join("");
 }
+const barcodeInput = document.getElementById("productSearch");
+
+// Keep search focused
+setInterval(() => {
+
+    if (document.activeElement !== barcodeInput) {
+        barcodeInput.focus();
+    }
+
+}, 300);
+
+
+// Detect scanner
+barcodeInput.addEventListener("keydown", function (e) {
+
+    if (e.key !== "Enter") return;
+
+    e.preventDefault();
+
+    const code = this.value.trim();
+
+    if (!code) return;
+
+    const products = getProducts();
+
+    const product = products.find(p =>
+        p.code.toLowerCase() === code.toLowerCase()
+    );
+
+    if (product) {
+
+        addToCart(product.code);
+
+        this.value = "";
+
+    } else {
+
+        notify("Product not found", "Barcode");
+
+        this.select();
+
+    }
+
+});
 // ---------- CART ----------
 function addToCart(productCode) {
     const products = getProducts();
@@ -494,11 +538,11 @@ function completeSale() {
     
     // Update customer
     /*
+    
     let customers = getCustomers();
     const cust = customers.find(c => c.name === customer);
     if (cust) { cust.sales = (cust.sales || 0) + total; saveCustomers(customers); }
     */
-    
    let customers = getCustomers();
 
 const cust = customers.find(c => c.name === customer);
@@ -519,7 +563,6 @@ if (cust) {
 }
 
 saveCustomers(customers);
-    
     // Print receipt
     const win = window.open('', '_blank', 'width=320,height=500');
     win.document.write(`
@@ -550,8 +593,8 @@ saveCustomers(customers);
     
     cart = [];
     updateCart();
-    renderProducts(currentCategory);
-    notify('Sale completed!', 'Success');
+    renderProducts(currentCategory);/*
+    notify('Sale completed!', 'Success');*/
     refreshDashboard();
 }
 
@@ -598,8 +641,19 @@ function filterStock() {
         row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
     });
 }
-
+/*
 function openAddProduct() {
+   document.getElementById('pCode').value = '';
+document.getElementById('pName').value = '';
+document.getElementById('pCategory').value = 'Groceries'; // or first option
+document.getElementById('pPrice').value = '';
+document.getElementById('pStock').value = '';
+    document.getElementById('productModalTitle').innerText = 'Add Product';
+    document.getElementById('productModal').classList.add('show');
+};
+
+function closeProduct() { document.getElementById('productModal').classList.remove('show'); }
+*/function openAddProduct() {
     document.getElementById('editCode').value = '';
     document.getElementById('pCode').value = '';
     document.getElementById('pName').value = '';
@@ -727,13 +781,21 @@ function globalSearch() {
 // ============================================================
 //  INITIALIZATION
 // ============================================================
-window.onload = function() {
+
+window.onload = function () {
+
     seedData();
     refreshDashboard();
     renderProducts();
     loadStock();
     loadCustomers();
     loadInvoices();
-    document.getElementById('productSearch').value = '';
-    console.log('🚀 DaxPOS loaded successfully!');
+
+    const search = document.getElementById("productSearch");
+
+    search.value = "";
+    search.focus();
+
+    console.log("🚀 DaxPOS loaded successfully!");
+
 };
