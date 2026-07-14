@@ -24,7 +24,7 @@
         }
         .sidebar-brand h1 {
             color: white;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
         }
         .sidebar-brand h1 span { color: #3b82f6; }
@@ -32,7 +32,7 @@
             color: #6a8aaa;
             font-size: 11px;
             display: block;
-        text-align:center;
+            text-align: center;
             margin-top: 2px;
         }
 
