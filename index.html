@@ -1,124 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAX POS · Admin Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DaxPOS · All-in-One System</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="logo">DAX POS SYSTEM</div>
-  <div class="search-area"><input id="searchBox" placeholder="Search product / Scan barcode" oninput="handleSearch()">
-  </div>
-  <div class="top-user"><div>Cashier</div>
-  <strong onclick="openAdminLog('stock')">Admin</strong>
+
+<!-- ==================== SIDEBAR ==================== -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <h1>Dax<span>POS</span></h1>
+        <small>Kenya Edition V1.0</small>
+    </div>
+    <div class="sidebar-nav">
+        <div class="nav-label">Operations</div>
+        <a class="active" data-page="dashboard" onclick="navigateTo('dashboard')">
+            <i class="fa fa-chart-pie"></i> Dashboard
+        </a>
+        <a data-page="pos" onclick="navigateTo('pos')">
+            <i class="fa fa-cash-register"></i> POS
+        </a>
+        <div class="nav-label">Inventory</div>
+        <a data-page="products" onclick="navigateTo('products')">
+            <i class="fa fa-boxes"></i> Products
+        </a>
+        <div class="nav-label">Sales</div>
+        <a data-page="customers" onclick="navigateTo('customers')">
+            <i class="fa fa-users"></i> Customers
+        </a>
+        <a data-page="invoices" onclick="navigateTo('invoices')">
+            <i class="fa fa-file-invoice"></i> Invoices
+        </a><!--
+        <div class="nav-label">System</div>
+        <a onclick="openAdmin()">
+            <i class="fa fa-cog"></i> System Admin
+        </a>-->
+    </div>
+    <div class="sidebar-footer">
+        <i class="fa-regular fa-circle" style="color:#16a34a;"></i> Live
+    </div>
+</nav>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div class="main-content">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+            <h2 id="pageTitle">Dashboard <small>overview</small></h2>
+            <div class="date-display" id="currentDate"></div>
+        </div>
+        <div class="topbar-right">
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search products, customers..." id="globalSearch" onkeyup="globalSearch()">
+            </div>
+            <div class="user-badge">
+                <div class="avatar">A</div>
+                <span>Admin</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE: DASHBOARD ==================== -->
+    <div class="page active" id="page-dashboard">
+        <div class="dash-grid" id="dashStats">
+            <div class="dash-card blue">
+                <i class="icon fa fa-coins"></i>
+                <div class="label">Today's Sales</div>
+                <div class="value" id="dashTodaySales">KES 0</div>
+                <div class="sub">0 transactions</div>
+            </div>
+            <div class="dash-card green">
+                <i class="icon fa fa-users"></i>
+                <div class="label">Customers</div>
+                <div class="value" id="dashCustomers">0</div>
+                <div class="sub">unique today</div>
+            </div>
+            <div class="dash-card orange">
+                <i class="icon fa fa-shopping-cart"></i>
+                <div class="label">Items Sold</div>
+                <div class="value" id="dashItems">0</div>
+                <div class="sub">today</div>
+            </div>
+            <div class="dash-card purple">
+                <i class="icon fa fa-receipt"></i>
+                <div class="label">Invoices</div>
+                <div class="value" id="dashInvoices">0</div>
+                <div class="sub">total</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:16px;">
+            <div class="recent-list">
+                <div class="header">Recent Transactions <span class="text-muted" style="font-weight:400;">today</span></div>
+                <div id="recentTransactions">
+                    <div class="item"><span class="text-muted" style="color:#6a8aaa;">No transactions yet today</span></div>
+                </div>
+            </div>
+            <div class="recent-list">
+                <div class="header">Best Sellers</div>
+                <div id="bestSellers">
+                    <div class="item"><span class="text-muted" style="color:#6a8aaa;">No sales data yet</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-box">
+                <h4>Sales Trend (7 days)</h4>
+                <div class="chart-container"><canvas id="dashTrendChart"></canvas></div>
+            </div>
+            <div class="chart-box">
+                <h4>Top Products</h4>
+                <div class="chart-container"><canvas id="dashTopChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE: POS ==================== -->
+    <div class="page" id="page-pos">
+        <div class="pos-container">
+            <!-- LEFT: Products -->
+            <div class="pos-left">
+                <div class="pos-search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Search products, customers, invoices..." oninput="filterProducts()">
+                </div>
+                <div class="pos-categories" id="categoryTabs">
+                    <button class="category-tab active" onclick="filterByCategory('All')">All</button>
+                    <button class="category-tab" onclick="filterByCategory('Confectionery')">Confectionery</button>
+                    <button class="category-tab" onclick="filterByCategory('Groceries')">Groceries</button>
+                    <button class="category-tab" onclick="filterByCategory('Personal Care')">Personal Care</button>
+                    <button class="category-tab" onclick="filterByCategory('Beverages')">Beverages</button>
+                    <button class="category-tab" onclick="filterByCategory('Household')">Household</button>
+                    <button class="category-tab" onclick="filterByCategory('Dairy')">Dairy</button>
+                </div>
+                <div class="pos-products" id="productGrid">
+                    <!-- Products rendered by JS -->
+                </div>
+            </div>
+
+            <!-- RIGHT: Cart -->
+            <div class="pos-right">
+                <div class="cart-customer">
+                    <i class="fa fa-user"></i>
+                    <span id="customerName">Walk-in Customer</span>
+                    <button class="change-customer" onclick="changeCustomer()"><i class="fa fa-pen"></i></button>
+                </div>
+
+                <div class="cart-header">
+                    <span>Cart Items</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+
+                <div class="cart-items" id="cartItems">
+                    <div class="empty-cart">
+                        <i class="fa fa-shopping-cart"></i>
+                        <p>Cart is empty</p>
+                        <small>Click a product to add it</small>
+                    </div>
+                </div>
+
+                <div class="cart-totals">
+                    <div class="total-row">
+                        <span class="total-label">Total</span>
+                        <span class="total-amount" id="cartTotal">KES 0.00</span>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <button class="payment-btn cash" onclick="selectPayment('Cash')"><i class="fa fa-money"></i> Cash</button>
+                    <button class="payment-btn mpesa" onclick="selectPayment('M-Pesa')"><i class="fa fa-mobile-alt"></i> M-Pesa</button>
+                    <button class="payment-btn card" onclick="selectPayment('Card')"><i class="fa fa-credit-card"></i> Card</button>
+                    <button class="payment-btn split" onclick="selectPayment('Split')"><i class="fa fa-split"></i> Split</button>
+                </div>
+
+                <button class="complete-sale" onclick="completeSale()">
+                    Complete Sale
+                    <span class="sale-amount" id="saleAmount">KES 0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE: PRODUCTS ==================== -->
+    <div class="page" id="page-products">
+        <div class="flex-between" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <h3><i class="fa fa-boxes"></i> Products</h3>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <input type="text" id="stockSearch" placeholder="Search product..." onkeyup="filterStock()" style="padding:6px 14px;border:1px solid #dce4ee;border-radius:40px;font-size:13px;">
+                <button class="btn-sm primary" onclick="openAddProduct()"><i class="fa fa-plus"></i> Add Product</button>
+            </div>
+        </div>
+        <div class="dash-grid" style="margin-bottom:12px;">
+            <div class="dash-card blue"><div class="label">Total Products</div><div class="value" id="stockTotal">0</div></div>
+            <div class="dash-card orange"><div class="label">Low Stock</div><div class="value" id="stockLow">0</div></div>
+            <div class="dash-card red"><div class="label">Out of Stock</div><div class="value" id="stockOut">0</div></div>
+            <div class="dash-card green"><div class="label">Stock Value</div><div class="value" id="stockValue">KES 0</div></div>
+        </div>
+        <div style="background:white; border-radius:14px; border:1px solid #eaf0f6; overflow:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead><tr style="background:#f8fafd;">
+                    <th style="padding:10px 12px;text-align:left;">#</th><th>Code</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
+                </tr></thead>
+                <tbody id="stockTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE: CUSTOMERS ==================== -->
+    <div class="page" id="page-customers">
+        <h3><i class="fa fa-users"></i> Customers</h3>
+        <div class="dash-grid" style="margin-top:12px;">
+            <div class="dash-card blue"><div class="label">Total Customers</div><div class="value" id="totalCustomers">0</div></div>
+            <div class="dash-card green"><div class="label">Today's Customers</div><div class="value" id="todayCustomers">0</div></div>
+        </div>
+        <div style="background:white; border-radius:14px; border:1px solid #eaf0f6; overflow:auto; margin-top:12px;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead><tr style="background:#f8fafd;">
+                    <th style="padding:10px 12px;">#</th><th>Name</th><th>Total Sales</th><th>Last Purchase</th>
+                </tr></thead>
+                <tbody id="customersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== PAGE: INVOICES ==================== -->
+    <div class="page" id="page-invoices">
+        <h3><i class="fa fa-file-invoice"></i> Invoices</h3>
+        <div style="background:white; border-radius:14px; border:1px solid #eaf0f6; overflow:auto; margin-top:12px;">
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead><tr style="background:#f8fafd;">
+                    <th style="padding:10px 12px;">#</th><th>Invoice #</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th>
+                </tr></thead>
+                <tbody id="invoicesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <h3>🔐 System Admin</h3>
+            <input type="password" id="adminPass" placeholder="Enter password" style="width:100%;">
+            <p id="loginError" style="color:#dc2626;font-size:12px;margin-top:6px;"></p>
+            <div class="btn-row">
+                <button class="cancel" onclick="closeAdmin()">Cancel</button>
+                <button class="save" onclick="checkAdmin()">Unlock</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <h3 id="productModalTitle">Add Product</h3>
+            <input type="hidden" id="editCode">
+            <label>Code</label><input type="text" id="pCode" placeholder="e.g. PRD-001">
+            <label>Name</label><input type="text" id="pName" placeholder="Product name">
+            <label>Category</label>
+            <select id="pCategory" style="width:100%;padding:8px 14px;border:1px solid #dce4ee;border-radius:40px;font-size:13px;">
+                <option value="Confectionery">Confectionery</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Personal Care">Personal Care</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Household">Household</option>
+                <option value="Dairy">Dairy</option>
+            </select>
+            <label>Price</label><input type="number" id="pPrice" placeholder="0.00">
+            <label>Stock</label><input type="number" id="pStock" placeholder="0">
+            <div class="btn-row">
+                <button class="cancel" onclick="closeProduct()">Cancel</button>
+                <button class="save" onclick="saveProduct()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="notifyModal">
+        <div class="modal-box" style="max-width:380px;">
+            <h3 id="notifyTitle">Alert</h3>
+            <p id="notifyMessage" style="margin:10px 0;"></p>
+            <div class="btn-row">
+                <button class="save" onclick="closeNotify()">OK</button>
+            </div>
+        </div>
+    </div>
 </div>
-</header>
-<div class="app-layout">
-  <aside class="sidebar">
-    <h3>Navigation</h3>
-    <button onclick="window.location.href='#';">Dashboard</button>
-    <button onclick="openAdminLog('stock')">Stock/Admin</button>
-<button onclick="openAdminLog('sales')">Sales&Report</button>
-<hr>
-    <button onclick="clearTable()">Clear</button>  
-    <button onclick="asideSale()">Hold</button>
-    <button onclick="openHistory()">History</button>
-  </aside>
-  <main class="content">
-    <section class="customer-bar"><label>Customer</label>
-      <input id="customerName" placeholder="Customer name">
-    </section>
-    <section class="categories">
-      <div id="categoryGrid"></div>
-    </section>
-    <section class="products-area">
-      <div id="productGrid"></div>
-    </section>
-    <section class="sales-table">
-      <table id="productTable">
-        <thead>
-        <tr>
-          <th>#</th>
-          <th>Product</th>
-          <th>Qty</th>
-          <th>Price</th>
-          <th>Total</th>
-          <th></th>
-        </tr></thead>
-        <tbody id="tableBody"></tbody>
-        <tfoot><tr><td colspan="4">Grand Total</td>
-          <td id="grandTotal">0</td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
-    </section>
-  </main>
-  <aside class="checkout">
-    <h2>Payment</h2>
-    <label>Total</label><input id="totalDisplay" readonly>
-    <label>Discount</label><input id="discount" oninput="updatePayment()">
-    <label>Customer Pays</label><input id="paid" oninput="updatePayment()">
-    <label>Balance</label><input id="balance" readonly>
-    <button onclick="completeSale()">Check Out</button>
-  </aside>
-</div>
-<!-- admin login -->
-<div id="adminLogin" style="display:none;">
-  <div id="admin-login">
-    <input id="adminPass" type="password" placeholder="password">
-    
-    <br><button onclick="checkAdmin()" class="quick">Login</button>
-    <button onclick="document.getElementById('adminLogin').style.display='none'">Close</button>
-  
-    <p id="loginError" style="color:red;font-weight: 800; text-align: center;"></p>
-  </div>
-</div>
-<!-- admin panel -->
-<div id="adminPanel" style="display:none;">
-  <div class="admin">
-    <input id="p_code" placeholder="Code">
-    <input id="p_type" placeholder="Type">
-    <input id="p_name" placeholder="Name">
-    <input id="p_stock" placeholder="Stock">
-    <input id="p_price" placeholder="Price">
-    <br>
-    <button onclick="startScan()">Scan</button>
-    <button onclick="addProduct()">Save</button>
-    <button onclick="document.getElementById('adminPanel').style.display='none'">Close</button>
-  
-<div id="stock">
-  <h2 style="text-align: center;">Stock</h2>
-   <!-- <button class="btn btn-success" onclick="addProduct()" style="margin:12px 0;">➕ Add / Update</button>
-     -->
-   <div style="max-height:200px;overflow-y:auto;width: 100%;border-top:1px solid #e9eff6;padding-top:10px;margin: 0 auto;display: block;">
-        <table style="font-size:0.8rem; min-width: 800px;max-width: 1250px;">
-          <thead><tr><th>Code</th><th>Name</th><th>Stock</th><th>Price</th><th></th></tr></thead>
-          <tbody id="catalogAdminBody"></tbody>
-        </table>
-      </div>
-</div>
-  </div>
-</div>
-<!-- catalog search -->
-<div id="catalogWrapper" style="display:none;">
-  <div><table><tbody id="catalogBody"></tbody></table></div>
-</div>
-<!-- history -->
-<div id="historyCard" style="display:none;">
-  <div><h3>📋 Sale History</h3><div id="historyList"></div><button onclick="closeHistory()">Close</button></div>
-</div>
-<!-- notify -->
-<div id="notifyBox">
-  <div id="notifyCard">
-    <h3 id="notifyTitle"></h3>
-    <p id="notifyMessage"></p>
-    <button onclick="closeNotify()">OK</button>
-  </div>
-</div>
-<footer>DAX POS SYSTEM  ©2026</footer>
-<script src="stock.js"></script>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script src="app.js">
+
+</script>
 </body>
 </html>
