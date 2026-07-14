@@ -493,9 +493,32 @@ function completeSale() {
     saveSales(sales);
     
     // Update customer
+    /*
     let customers = getCustomers();
     const cust = customers.find(c => c.name === customer);
     if (cust) { cust.sales = (cust.sales || 0) + total; saveCustomers(customers); }
+    */
+    
+   let customers = getCustomers();
+
+const cust = customers.find(c => c.name === customer);
+
+if (cust) {
+
+    cust.sales = (cust.sales || 0) + total;
+    cust.lastPurchase = new Date().toLocaleDateString();
+
+} else {
+
+    customers.push({
+        name: customer,
+        sales: total,
+        lastPurchase: new Date().toLocaleDateString()
+    });
+
+}
+
+saveCustomers(customers);
     
     // Print receipt
     const win = window.open('', '_blank', 'width=320,height=500');
